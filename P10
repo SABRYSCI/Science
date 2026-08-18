@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إجابة سؤال تحدي التفكير - صفحة 9</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            padding: 25px;
+            text-align: center;
+        }
+        h1 {
+            color: #0056b3;
+            font-size: 1.6em;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: #555;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.95em;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #0056b3;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+            font-size: 0.9em;
+            color: #777;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>إجابة سؤال TIMSS - صفحة 9</h1>
+        <div class="subtitle">أهلاً بك يا بطل العلوم! راجع خطواتك العلمية لفصل المخلوط:</div>
+        
+        <!-- الصورة التي طلبتها -->
+        <img src="https://i.postimg.cc/vZybHkh2/1.jpg" alt="خطوات فصل المخلوط لسمير">
+        
+        <!-- جدول الإجابة النموذجية -->
+        <table>
+            <thead>
+                <tr>
+                    <th>العملية</th>
+                    <th>وصف العملية</th>
+                    <th>سبب القيام بالعملية</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>تمرير المزيج في منخل</td>
+                    <td>إزالة الأوراق</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>إضافة الماء إلى الخليط والتحريك</td>
+                    <td>لإذابة الملح (بينما لا يذوب الرمل)</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>الترشيح (باستخدام ورق ترشيح)</td>
+                    <td>لفصل الرمل عن المحلول الملحي</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>التبخير أو التسخين</td>
+                    <td>لتبخير الماء والحصول على الملح الصلب النقي</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="footer">
+           36864227 مع تحياتي أستاذ: صبري محمد حمد 🧪
+        </div>
+    </div>
+</body>
+</html>
