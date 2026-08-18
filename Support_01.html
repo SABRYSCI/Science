@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نشاط علاجي 1 - المخاليط والمحاليل</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+        body { font-family: 'Tajawal', sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        .container { background-color: white; border-radius: 10px; padding: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
+        .header-img { width: 100%; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; }
+        h2 { color: #2c3e50; text-align: center; font-size: 1.4em; margin-bottom: 5px; }
+        .date-box { text-align: center; color: #7f8c8d; font-size: 0.9em; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; color: #333; }
+        input[type="text"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-family: 'Tajawal', sans-serif; font-size: 1em; box-sizing: border-box; }
+        .question-card { background-color: #e9f2f9; border: 1px solid #d1e3f0; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .item-name { font-size: 1.1em; font-weight: bold; margin-bottom: 10px; color: #2c3e50; }
+        .radio-group label { display: inline-block; margin-left: 20px; cursor: pointer; padding: 5px; }
+        .btn-submit { width: 100%; padding: 12px; background-color: #27ae60; border: none; border-radius: 5px; color: white; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 10px; font-family: 'Tajawal', sans-serif; transition: 0.3s; }
+        .btn-submit:hover { background-color: #219150; }
+        .result-box { display: none; text-align: center; margin-top: 20px; padding: 15px; border: 2px dashed #e74c3c; border-radius: 8px; background-color: #fadbd8; }
+        .grade-text { color: #c0392b; font-size: 1.8em; font-weight: bold; }
+        .feedback { text-align: right; margin-top: 15px; font-size: 0.95em; color: #333; }
+        .correct { color: #27ae60; font-weight: bold; }
+        .wrong { color: #c0392b; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://i.postimg.cc/cL0dkNg1/trwysyh.png" alt="الترويسة" class="header-img">
+        <h2>نشاط علاجي 1 - المخاليط والمحاليل</h2>
+        <div class="date-box" id="currentDate"></div>
+        
+        <form id="activityForm">
+            <div class="form-group">
+                <label>اسم الطالب الرباعي:</label>
+                <input type="text" id="studentName" required placeholder="اكتب اسمك هنا...">
+            </div>
+            <div class="form-group">
+                <label>الصف:</label>
+                <select id="studentClass" required>
+                    <option value="" disabled selected>اختر صفك...</option>
+                    <option value="ثاني إعدادي 1">ثاني إعدادي 1</option>
+                    <option value="ثاني إعدادي 2">ثاني إعدادي 2</option>
+                    <option value="ثاني إعدادي 3">ثاني إعدادي 3</option>
+                    <option value="ثاني إعدادي 4">ثاني إعدادي 4</option>
+                    <option value="ثاني إعدادي 5">ثاني إعدادي 5</option>
+                </select>
+            </div>
+
+            <!-- الأسئلة -->
+            <div class="question-card">
+                <div class="item-name">1. سلطة الخضار تعتبر:</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="q1" value="مادة نقية" required> مادة نقية</label>
+                    <label><input type="radio" name="q1" value="مخلوط"> مخلوط</label>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="item-name">2. الماء النقي (H2O) يعتبر:</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="q2" value="مادة نقية" required> مادة نقية</label>
+                    <label><input type="radio" name="q2" value="مخلوط"> مخلوط</label>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="item-name">3. الهواء الجوي يعتبر:</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="q3" value="مادة نقية" required> مادة نقية</label>
+                    <label><input type="radio" name="q3" value="مخلوط"> مخلوط</label>
+                </div>
+            </div>
+            <div class="question-card">
+                <div class="item-name">4. ملح الطعام النقي (NaCl) يعتبر:</div>
+                <div class="radio-group">
+                    <label><input type="radio" name="q4" value="مادة نقية" required> مادة نقية</label>
+                    <label><input type="radio" name="q4" value="مخلوط"> مخلوط</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">تسليم النشاط</button>
+        </form>
+
+        <div class="result-box" id="resultBox">
+            <div>الدرجة المستحقة:</div>
+            <div class="grade-text" id="gradeDisplay">0 / 4</div>
+            <div class="feedback" id="feedbackDisplay"></div>
+            <div style="color:#27ae60; font-size:0.9em; margin-top:15px; font-weight:bold;">تم توثيق إجابتك وإرسالها لأستاذ المادة بنجاح ✔️</div>
+        </div>
+    </div>
+
+    <script>
+        // إظهار التاريخ للطالب
+        document.getElementById('currentDate').innerText = "التاريخ: " + new Date().toLocaleDateString('ar-EG');
+
+        // الرابط المركزي الخاص بك تم إضافته هنا
+        const scriptURL = 'https://script.google.com/macros/s/AKfycby8gytKFTUnjpdz_z4BUjylGlSrvYAj_LsqjMH_njVQL6FqZZNGn-eJzQPEdWTqM8gr/exec'; 
+        const form = document.getElementById('activityForm');
+        
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            document.getElementById('submitBtn').innerText = 'جاري التوثيق والإرسال...';
+            document.getElementById('submitBtn').disabled = true;
+
+            // حساب الدرجة والتغذية الراجعة
+            let score = 0;
+            let feedbackHTML = "<ul>";
+
+            if(form.q1.value === 'مخلوط') { score++; feedbackHTML += "<li class='correct'>س1: صحيح (السلطة مخلوط يمكن فصله).</li>"; } 
+            else { feedbackHTML += "<li class='wrong'>س1: خطأ (سلطة الخضار تعتبر مخلوطاً).</li>"; }
+
+            if(form.q2.value === 'مادة نقية') { score++; feedbackHTML += "<li class='correct'>س2: صحيح (الماء النقي مركب ثابت).</li>"; } 
+            else { feedbackHTML += "<li class='wrong'>س2: خطأ (الماء النقي مادة نقية/مركب).</li>"; }
+
+            if(form.q3.value === 'مخلوط') { score++; feedbackHTML += "<li class='correct'>س3: صحيح (الهواء مخلوط متجانس من عدة غازات).</li>"; } 
+            else { feedbackHTML += "<li class='wrong'>س3: خطأ (الهواء الجوي مخلوط غازي).</li>"; }
+
+            if(form.q4.value === 'مادة نقية') { score++; feedbackHTML += "<li class='correct'>س4: صحيح (الملح مركب كيميائي نقي).</li>"; } 
+            else { feedbackHTML += "<li class='wrong'>س4: خطأ (الملح مادة نقية/مركب).</li>"; }
+
+            feedbackHTML += "</ul>";
+
+            // إعداد البيانات للإرسال إلى القاعدة المركزية
+            // لاحظ أن اسم النشاط هنا يجب أن يكون دقيقاً لأنه الذي سنستخدمه في الطباعة لاحقاً
+            let payload = {
+                activityName: "علاجي 1",
+                studentName: document.getElementById('studentName').value,
+                studentClass: document.getElementById('studentClass').value,
+                score: score + " / 4",
+                details: `س1:${form.q1.value} | س2:${form.q2.value} | س3:${form.q3.value} | س4:${form.q4.value}`
+            };
+
+            // الإرسال
+            fetch(scriptURL, { 
+                method: 'POST', 
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                // إظهار النتيجة
+                document.getElementById('resultBox').style.display = 'block';
+                document.getElementById('gradeDisplay').innerText = score + ' / 4';
+                document.getElementById('feedbackDisplay').innerHTML = feedbackHTML;
+                document.getElementById('submitBtn').style.display = 'none';
+                
+                // تعطيل الحقول
+                let inputs = form.querySelectorAll('input, select');
+                inputs.forEach(input => input.disabled = true);
+            })
+            .catch(error => {
+                alert('حدث خطأ بالاتصال! تأكد من شبكة الإنترنت.');
+                document.getElementById('submitBtn').innerText = 'تسليم النشاط';
+                document.getElementById('submitBtn').disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
