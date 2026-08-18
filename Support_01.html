@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نشاط علاجي 1 - المخاليط والمحاليل</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+        * { box-sizing: border-box; }
         body { font-family: 'Tajawal', sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
         .container { background-color: white; border-radius: 10px; padding: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
         .header-img { width: 100%; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; }
@@ -19,6 +20,7 @@
         .radio-group label { display: inline-block; margin-left: 20px; cursor: pointer; padding: 5px; }
         .btn-submit { width: 100%; padding: 12px; background-color: #27ae60; border: none; border-radius: 5px; color: white; font-size: 1.1em; font-weight: bold; cursor: pointer; margin-top: 10px; font-family: 'Tajawal', sans-serif; transition: 0.3s; }
         .btn-submit:hover { background-color: #219150; }
+        .btn-submit:disabled { background-color: #95a5a6; cursor: not-allowed; }
         .result-box { display: none; text-align: center; margin-top: 20px; padding: 15px; border: 2px dashed #e74c3c; border-radius: 8px; background-color: #fadbd8; }
         .grade-text { color: #c0392b; font-size: 1.8em; font-weight: bold; }
         .feedback { text-align: right; margin-top: 15px; font-size: 0.95em; color: #333; }
@@ -31,7 +33,7 @@
         <img src="https://i.postimg.cc/cL0dkNg1/trwysyh.png" alt="الترويسة" class="header-img">
         <h2>نشاط علاجي 1 - المخاليط والمحاليل</h2>
         <div class="date-box" id="currentDate"></div>
-        
+
         <form id="activityForm">
             <div class="form-group">
                 <label>اسم الطالب الرباعي:</label>
@@ -49,7 +51,6 @@
                 </select>
             </div>
 
-            <!-- الأسئلة -->
             <div class="question-card">
                 <div class="item-name">1. سلطة الخضار تعتبر:</div>
                 <div class="radio-group">
@@ -91,59 +92,69 @@
     </div>
 
     <script>
-        // إظهار التاريخ للطالب
         document.getElementById('currentDate').innerText = "التاريخ: " + new Date().toLocaleDateString('ar-EG');
 
-        // الرابط المركزي الخاص بك تم إضافته هنا
-        const scriptURL = 'https://script.google.com/macros/s/AKfycby8gytKFTUnjpdz_z4BUjylGlSrvYAj_LsqjMH_njVQL6FqZZNGn-eJzQPEdWTqM8gr/exec'; 
+        // رابطك المركزي الدائم
+        const scriptURL = 'https://script.google.com/macros/s/AKfycby8gytKFTUnjpdz_z4BUjylGlSrvYAj_LsqjMH_njVQL6FqZZNGn-eJzQPEdWTqM8gr/exec';
         const form = document.getElementById('activityForm');
-        
+
+        // بنك الأسئلة: النص الكامل + الإجابة الصحيحة (يُستخدم في التصحيح وفي بناء تقرير الطباعة)
+        const questionsBank = [
+            { id: 'q1', text: 'سلطة الخضار تعتبر:', correct: 'مخلوط' },
+            { id: 'q2', text: 'الماء النقي (H2O) يعتبر:', correct: 'مادة نقية' },
+            { id: 'q3', text: 'الهواء الجوي يعتبر:', correct: 'مخلوط' },
+            { id: 'q4', text: 'ملح الطعام النقي (NaCl) يعتبر:', correct: 'مادة نقية' }
+        ];
+
         form.addEventListener('submit', e => {
             e.preventDefault();
             document.getElementById('submitBtn').innerText = 'جاري التوثيق والإرسال...';
             document.getElementById('submitBtn').disabled = true;
 
-            // حساب الدرجة والتغذية الراجعة
             let score = 0;
             let feedbackHTML = "<ul>";
+            let questionsReport = [];
 
-            if(form.q1.value === 'مخلوط') { score++; feedbackHTML += "<li class='correct'>س1: صحيح (السلطة مخلوط يمكن فصله).</li>"; } 
-            else { feedbackHTML += "<li class='wrong'>س1: خطأ (سلطة الخضار تعتبر مخلوطاً).</li>"; }
+            questionsBank.forEach((item, idx) => {
+                const num = idx + 1;
+                const studentAnswer = form[item.id].value;
+                const isCorrect = studentAnswer === item.correct;
+                if (isCorrect) score++;
 
-            if(form.q2.value === 'مادة نقية') { score++; feedbackHTML += "<li class='correct'>س2: صحيح (الماء النقي مركب ثابت).</li>"; } 
-            else { feedbackHTML += "<li class='wrong'>س2: خطأ (الماء النقي مادة نقية/مركب).</li>"; }
+                feedbackHTML += isCorrect
+                    ? `<li class='correct'>س${num}: صحيح.</li>`
+                    : `<li class='wrong'>س${num}: خطأ.</li>`;
 
-            if(form.q3.value === 'مخلوط') { score++; feedbackHTML += "<li class='correct'>س3: صحيح (الهواء مخلوط متجانس من عدة غازات).</li>"; } 
-            else { feedbackHTML += "<li class='wrong'>س3: خطأ (الهواء الجوي مخلوط غازي).</li>"; }
-
-            if(form.q4.value === 'مادة نقية') { score++; feedbackHTML += "<li class='correct'>س4: صحيح (الملح مركب كيميائي نقي).</li>"; } 
-            else { feedbackHTML += "<li class='wrong'>س4: خطأ (الملح مادة نقية/مركب).</li>"; }
-
+                // كل سؤال يُخزَّن ككائن منظم لاستخدامه لاحقاً في بناء تقرير الطباعة الفاخر
+                questionsReport.push({
+                    n: num,
+                    q: item.text,
+                    answer: studentAnswer,
+                    correct: item.correct,
+                    isCorrect: isCorrect
+                });
+            });
             feedbackHTML += "</ul>";
 
-            // إعداد البيانات للإرسال إلى القاعدة المركزية
-            // لاحظ أن اسم النشاط هنا يجب أن يكون دقيقاً لأنه الذي سنستخدمه في الطباعة لاحقاً
             let payload = {
                 activityName: "علاجي 1",
                 studentName: document.getElementById('studentName').value,
                 studentClass: document.getElementById('studentClass').value,
-                score: score + " / 4",
-                details: `س1:${form.q1.value} | س2:${form.q2.value} | س3:${form.q3.value} | س4:${form.q4.value}`
+                score: score + " / " + questionsBank.length,
+                // نرسل تفاصيل الإجابات كـ JSON منظم (وليس نصاً مفصولاً بخط) ليتمكن نظام الطباعة
+                // من بناء تقرير مرتب بأعمدة وألوان بدلاً من نص متصل
+                details: JSON.stringify(questionsReport)
             };
 
-            // الإرسال
-            fetch(scriptURL, { 
-                method: 'POST', 
+            fetch(scriptURL, {
+                method: 'POST',
                 body: JSON.stringify(payload)
             })
             .then(response => {
-                // إظهار النتيجة
                 document.getElementById('resultBox').style.display = 'block';
-                document.getElementById('gradeDisplay').innerText = score + ' / 4';
+                document.getElementById('gradeDisplay').innerText = score + ' / ' + questionsBank.length;
                 document.getElementById('feedbackDisplay').innerHTML = feedbackHTML;
                 document.getElementById('submitBtn').style.display = 'none';
-                
-                // تعطيل الحقول
                 let inputs = form.querySelectorAll('input, select');
                 inputs.forEach(input => input.disabled = true);
             })
