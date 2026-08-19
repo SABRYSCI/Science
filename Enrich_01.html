@@ -30,7 +30,7 @@
         }
         .btn-print:hover { background-color: #163a63; }
         .result-box { display: none; text-align: center; margin-top: 20px; padding: 15px; border: 2px dashed #e74c3c; border-radius: 8px; background-color: #fadbd8; }
-        .grade-text { color: #c0392b; font-size: 1.8em; font-weight: bold; }
+        .grade-text { color: #c0392b; font-size: 1.8em; font-weight: bold; direction: ltr; display: inline-block; }
         .feedback { text-align: right; margin-top: 15px; font-size: 0.95em; color: #333; }
         .feedback ul { margin: 0; padding-inline-start: 18px; }
         .correct { color: #27ae60; font-weight: bold; }
@@ -152,7 +152,7 @@
                 background-color: #eafaf0;
                 page-break-inside: avoid;
             }
-            .grade-text { font-size: 1.2em; }
+            .grade-text { font-size: 1.2em; direction: ltr; display: inline-block; }
             .feedback { font-size: 0.75em; margin-top: 4px; }
             .result-box > div:last-child { display: none; }
         }
@@ -219,7 +219,7 @@
 
         <div class="result-box" id="resultBox">
             <div>الدرجة المستحقة:</div>
-            <div class="grade-text" id="gradeDisplay">0 / 4</div>
+            <div class="grade-text" id="gradeDisplay">0 من 4</div>
             <div class="feedback" id="feedbackDisplay"></div>
             <div style="color:#27ae60; font-size:0.9em; margin-top:15px; font-weight:bold;">تم توثيق إجابتك وإرسالها لأستاذ المادة بنجاح ✔️</div>
         </div>
@@ -297,7 +297,7 @@
                 activityName: "إثرائي 1",
                 studentName: document.getElementById('studentName').value,
                 studentClass: document.getElementById('studentClass').value,
-                score: score + " / " + questionsBank.length,
+                score: score + " من " + questionsBank.length,
                 details: JSON.stringify(questionsReport)
             };
 
@@ -307,7 +307,7 @@
             })
             .then(response => {
                 document.getElementById('resultBox').style.display = 'block';
-                document.getElementById('gradeDisplay').innerText = score + ' / ' + questionsBank.length;
+                document.getElementById('gradeDisplay').innerText = score + " من " + questionsBank.length;
                 document.getElementById('feedbackDisplay').innerHTML = feedbackHTML;
                 document.getElementById('submitBtn').style.display = 'none';
                 document.getElementById('printBtn').style.display = 'block';
