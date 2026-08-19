@@ -35,6 +35,17 @@
         .feedback ul { margin: 0; padding-inline-start: 18px; }
         .correct { color: #27ae60; font-weight: bold; }
         .wrong { color: #c0392b; font-weight: bold; }
+        
+        /* تنسيق التذييل */
+        .footer-note {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #ecf0f1;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
 
         @media print {
             @page { size: A4 portrait; margin: 8mm; }
@@ -63,6 +74,7 @@
             .grade-text { font-size: 1.2em; direction: ltr; display: inline-block; unicode-bidi: embed; }
             .feedback { font-size: 0.75em; margin-top: 4px; }
             .result-box > div:last-child { display: none; }
+            .footer-note { margin-top: 15px; padding-top: 10px; font-size: 0.75em; }
         }
     </style>
 </head>
@@ -135,6 +147,10 @@
             <div class="feedback" id="feedbackDisplay"></div>
             <div style="color:#27ae60; font-size:0.9em; margin-top:15px; font-weight:bold;">تم توثيق إجابتك وإرسالها لأستاذ المادة بنجاح ✔️</div>
         </div>
+        
+        <!-- التذييل الجديد -->
+        <div class="footer-note">إعداد الأستاذ / صبري محمد حمد</div>
+        
     </div>
 
     <script>
