@@ -24,8 +24,109 @@
         .result-box { display: none; text-align: center; margin-top: 20px; padding: 15px; border: 2px dashed #e74c3c; border-radius: 8px; background-color: #fadbd8; }
         .grade-text { color: #c0392b; font-size: 1.8em; font-weight: bold; }
         .feedback { text-align: right; margin-top: 15px; font-size: 0.95em; color: #333; }
+        .feedback ul { margin: 0; padding-inline-start: 18px; }
         .correct { color: #27ae60; font-weight: bold; }
         .wrong { color: #c0392b; font-weight: bold; }
+
+        /* =====================================================
+           تنسيقات الطباعة: كل شيء في صفحة A4 واحدة، بشكل مضغوط
+           وأنيق (إطار، شارات إجابة بدل أزرار الاختيار الخام)
+           ===================================================== */
+        @media print {
+            @page { size: A4 portrait; margin: 8mm; }
+
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                box-shadow: none !important;
+                transition: none !important;
+            }
+
+            html, body {
+                background: #ffffff;
+                padding: 0;
+                margin: 0;
+            }
+
+            .container {
+                max-width: 100%;
+                width: 100%;
+                margin: 0;
+                padding: 12px 20px;
+                border: 3px solid #1f497d;   /* إطار أنيق حول كامل النشاط عند الطباعة */
+                border-radius: 12px;
+                page-break-inside: avoid;
+            }
+
+            .header-img {
+                max-height: 70px;
+                width: auto;
+                display: block;
+                margin: 0 auto 8px;
+                border: none;
+            }
+
+            h2 { font-size: 1.1em; margin: 2px 0; }
+            .date-box { font-size: 0.75em; margin-bottom: 8px; color: #555; }
+
+            .form-group { margin-bottom: 6px; }
+            label { font-size: 0.8em; margin-bottom: 2px; }
+
+            input[type="text"], select {
+                padding: 3px 6px;
+                font-size: 0.85em;
+                border: none;
+                border-bottom: 1px solid #999;
+                border-radius: 0;
+                background: transparent;
+                -webkit-appearance: none;
+                appearance: none;
+                color: #000;
+                opacity: 1 !important;
+                -webkit-text-fill-color: #000 !important;
+            }
+
+            .question-card {
+                padding: 6px 12px;
+                margin-bottom: 5px;
+                border-radius: 6px;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            .item-name { font-size: 0.9em; margin-bottom: 4px; }
+
+            /* إخفاء أزرار الاختيار الخام، وعرض الإجابة المختارة فقط كشارة أنيقة */
+            .radio-group { display: flex; gap: 8px; }
+            .radio-group input[type="radio"] { display: none; }
+            .radio-group label { margin: 0; padding: 0; }
+            .radio-group label:has(input:not(:checked)) { display: none; }
+            .radio-group label:has(input:checked) {
+                display: inline-block;
+                background: #eafaf0;
+                color: #1e8449;
+                border: 1px solid #27ae60;
+                border-radius: 20px;
+                padding: 2px 12px;
+                font-size: 0.85em;
+                font-weight: bold;
+            }
+            .radio-group label:has(input:checked)::before { content: "✔ "; }
+
+            .btn-submit { display: none !important; }
+
+            .result-box {
+                margin-top: 10px;
+                padding: 8px 12px;
+                border: 2px solid #27ae60;
+                border-radius: 8px;
+                background-color: #eafaf0;
+                page-break-inside: avoid;
+            }
+            .grade-text { font-size: 1.3em; }
+            .feedback { font-size: 0.8em; margin-top: 6px; }
+            /* سطر التأكيد النصي غير مفيد على الورق المطبوع */
+            .result-box > div:last-child { display: none; }
+        }
     </style>
 </head>
 <body>
