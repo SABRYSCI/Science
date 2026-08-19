@@ -236,6 +236,17 @@
             { id: 'q4', text: 'ملح الطعام النقي (NaCl) يعتبر:', correct: 'مادة نقية' }
         ];
 
+        // ------------------------------------------------------------
+        // تحويل الأرقام الإنجليزية إلى أرقام عربية هندية (٠-٩)
+        // لعرض الدرجة بشكل منظم وآمن من مشاكل انعكاس/تلاصق الأرقام
+        // عند وجودها بجانب كلمة عربية ("من") داخل نص RTL — نفس الحل
+        // المستخدم في كود الطباعة الاحترافي (Google Docs).
+        // ------------------------------------------------------------
+        function toArabicDigits(value) {
+            const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            return value.toString().replace(/[0-9]/g, d => arabicDigits[+d]);
+        }
+
         const viewportMeta = document.getElementById('viewportMeta');
         function expandViewportForPrint() {
             viewportMeta.setAttribute('content', 'width=1000, initial-scale=1');
@@ -305,8 +316,7 @@
             })
             .then(response => {
                 document.getElementById('resultBox').style.display = 'block';
-                document.getElementById('gradeDisplayinnerHTML', `<span dir="ltr">${score} من ${questionsBank.length}</span>`);
-                document.getElementById('gradeDisplay').innerText = score + " من " + questionsBank.length;
+                document.getElementById('gradeDisplay').innerText = toArabicDigits(score) + " من " + toArabicDigits(questionsBank.length);
                 document.getElementById('feedbackDisplay').innerHTML = feedbackHTML;
                 document.getElementById('submitBtn').style.display = 'none';
                 document.getElementById('printBtn').style.display = 'block';
