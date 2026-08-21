@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة أنشطة العلوم | الثاني الإعدادي</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Tajawal', sans-serif; background-color: #f4f7f6; color: #333; }
+        
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; }
+        .header-img { width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        
+        .header-title { text-align: center; color: #1f497d; margin-bottom: 5px; font-size: 1.8em; font-weight: 900; }
+        .teacher-name { text-align: center; color: #7f8c8d; margin-bottom: 10px; font-size: 1.1em; font-weight: bold; }
+        .semester-info { text-align: center; background-color: #eaf2f8; color: #1f497d; display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin: 0 auto 30px auto; display: table; }
+        
+        /* شبكة الدروس (Grid) لعرض البطاقات بشكل متجاور على الشاشات الكبيرة */
+        .lessons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        
+        .lesson-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease; border-right: 5px solid #1f497d; }
+        .lesson-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        
+        .lesson-title { font-size: 1.3em; color: #2c3e50; margin-bottom: 15px; font-weight: 700; border-bottom: 2px dashed #eee; padding-bottom: 10px;}
+        
+        .buttons-container { display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        .btn { flex: 1; min-width: 120px; text-align: center; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 1em; font-weight: bold; color: white; transition: 0.3s; }
+        
+        /* ألوان الأزرار */
+        .btn-blue { background-color: #1976d2; border: 1px solid #1565c0; }
+        .btn-blue:hover { background-color: #115293; box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3); }
+        
+        .btn-green { background-color: #27ae60; border: 1px solid #1e8449; }
+        .btn-green:hover { background-color: #196f3d; box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3); }
+        
+        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #95a5a6; font-size: 0.9em; }
+
+        @media (max-width: 400px) {
+            .buttons-container { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- الترويسة العلوية -->
+        <img src="https://i.postimg.cc/cL0dkNg1/trwysyh.png" alt="ترويسة العلوم" class="header-img">
+        
+        <h1 class="header-title">منصة الأنشطة التفاعلية لمادة العلوم</h1>
+        <p class="teacher-name">الصف الثاني الإعدادي | إعداد الأستاذ: صبري محمد حمد</p>
+        <div class="semester-info">الفصل الدراسي الثاني</div>
+
+        <!-- حاوية الدروس التي سيتم تعبئتها تلقائياً -->
+        <div class="lessons-grid" id="lessonsContainer">
+            <!-- سيتم توليد البطاقات هنا بواسطة الجافاسكريبت -->
+        </div>
+
+        <div class="footer">
+            جميع الحقوق محفوظة &copy; 2026 | أ. صبري محمد حمد
+        </div>
+    </div>
+
+    <script>
+        // سكربت ذكي لتوليد الـ 25 بطاقة تلقائياً بناءً على أسماء ملفاتك
+        const container = document.getElementById('lessonsContainer');
+        const totalLessons = 25; // عدد الأنشطة الإجمالي
+
+        for (let i = 1; i <= totalLessons; i++) {
+            // تنسيق الرقم ليصبح بصيغة 01, 02, ... 10, 11 كما في ملفاتك
+            let numStr = i < 10 ? '0' + i : i.toString(); 
+            
+            // إنشاء البطاقة
+            let card = document.createElement('div');
+            card.className = 'lesson-card';
+            
+            card.innerHTML = `
+                <h2 class="lesson-title">نشاط رقم ${i}</h2>
+                <div class="buttons-container">
+                    <a href="Support_${numStr}.html" class="btn btn-blue">علاجي ${i} ✏️</a>
+                    <a href="Enrich_${numStr}.html" class="btn btn-green">إثرائي ${i} 🚀</a>
+                </div>
+            `;
+            
+            container.appendChild(card);
+        }
+    </script>
+</body>
+</html>
