@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق مقياس الرقم الهيدروجيني (pH)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap');
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0fdf4;
+            color: #111827;
+        }
+
+        /* تنسيق التدرج اللوني لمقياس pH (من اليسار لليمين 0 الى 14) */
+        .ph-gradient {
+            background: linear-gradient(to right, 
+                #ef4444, /* 0 Red */
+                #f97316, /* 2 Orange */
+                #eab308, /* 4 Yellow */
+                #84cc16, /* 6 Light Green */
+                #22c55e, /* 7 Green (Neutral) */
+                #06b6d4, /* 9 Cyan */
+                #3b82f6, /* 11 Blue */
+                #6366f1, /* 13 Indigo */
+                #8b5cf6  /* 14 Violet */
+            );
+        }
+
+        /* لضمان بقاء الأرقام والتدريج من اليسار إلى اليمين حتى في الواجهة العربية */
+        .ltr-scale {
+            direction: ltr;
+        }
+
+        .tab-active {
+            background-color: #16a34a;
+            color: white;
+            border-color: #15803d;
+        }
+        
+        .tab-inactive {
+            background-color: #e5e7eb;
+            color: #374151;
+            border-color: #d1d5db;
+        }
+
+        /* تحسينات العرض للتكبير (Zoom) */
+        #intro-scale-container {
+            transition: transform 0.3s ease;
+            transform-origin: center center;
+        }
+        
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="bg-white shadow-md p-6 mb-8 text-center z-10 sticky top-0">
+        <h1 class="text-5xl font-black text-green-700 mb-6 drop-shadow-md">مقياس الرقم الهيدروجيني (pH)</h1>
+        
+        <div class="flex justify-center gap-6">
+            <button id="tab-intro" onclick="switchTab('intro')" class="tab-active text-3xl font-bold py-4 px-10 rounded-2xl border-4 shadow-lg transition-transform hover:scale-105">
+                التمهيد والشرح
+            </button>
+            <button id="tab-experiment" onclick="switchTab('experiment')" class="tab-inactive text-3xl font-bold py-4 px-10 rounded-2xl border-4 shadow-lg transition-transform hover:scale-105">
+                التجربة العملية
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow px-8 pb-12 w-full max-w-[100vw] overflow-x-hidden">
+
+        <section id="section-intro" class="bg-white p-8 rounded-3xl shadow-2xl border-4 border-green-200">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">تعرف على مقياس الحموضة والقاعدية</h2>
+                <p class="text-2xl text-gray-600 font-bold">مقياس يبدأ من 0 وينتهي عند 14 لتحديد نوع المحلول</p>
+            </div>
+
+            <!-- أزرار التكبير والتصغير -->
+            <div class="flex justify-center gap-4 mb-8">
+                <button onclick="zoomIntro(1.2)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-2xl py-3 px-8 rounded-xl shadow">تكبير (+)</button>
+                <button onclick="zoomIntro(1)" class="bg-gray-600 hover:bg-gray-700 text-white font-bold text-2xl py-3 px-8 rounded-xl shadow">الحجم الطبيعي</button>
+                <button onclick="zoomIntro(0.8)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-2xl py-3 px-8 rounded-xl shadow">تصغير (-)</button>
+            </div>
+
+            <!-- حاوية المقياس القابلة للتمرير والتكبير -->
+            <div class="overflow-x-auto overflow-y-hidden pb-10 border-4 border-gray-300 rounded-2xl bg-gray-50 p-10" style="min-height: 450px;">
+                <div id="intro-scale-container" class="ltr-scale relative w-[1600px] mx-auto h-[250px] mt-20">
+                    
+                    <!-- شريط الألوان -->
+                    <div class="absolute top-1/2 left-0 w-full h-16 -mt-8 ph-gradient rounded-full shadow-inner border-4 border-gray-800"></div>
+
+                    <!-- النصوص والأسهم (الأحماض، المتعادل، القواعد) -->
+                    <div class="absolute top-0 w-full flex justify-between px-[5%] -mt-16 text-3xl font-black text-center rtl-text" style="direction: rtl;">
+                        <div class="w-1/3 text-purple-700">
+                            قاعدة (أكبر من 7)
+                            <div class="text-4xl mt-2 text-purple-600">← تزداد القاعدية</div>
+                        </div>
+                        <div class="w-1/3 text-green-700">
+                            متعادل (7)
+                            <div class="text-4xl mt-2 text-green-600">↓</div>
+                        </div>
+                        <div class="w-1/3 text-red-700">
+                            حمض (أقل من 7)
+                            <div class="text-4xl mt-2 text-red-600">تزداد الحموضية →</div>
+                        </div>
+                    </div>
+
+                    <!-- الأرقام الرئيسية -->
+                    <div class="absolute top-1/2 left-0 w-full flex justify-between px-[1%] mt-12 text-4xl font-black">
+                        <!-- سيتم توليد الأرقام بواسطة جافاسكربت -->
+                        <script>
+                            for(let i=0; i<=14; i++) {
+                                document.write(`<div class="w-8 text-center flex-shrink-0">${i}</div>`);
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-experiment" class="hide bg-white p-8 rounded-3xl shadow-2xl border-4 border-blue-200">
+            
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">التجربة العملية: قياس محاليل مختلفة</h2>
+                <p class="text-2xl text-gray-600 font-bold bg-yellow-100 p-4 rounded-xl inline-block border-2 border-yellow-400 shadow-sm">
+                    اضغط على أي مكان في المسطرة لاختيار قيمة دقيقة (مثال: 4.3 أو 5.9) وإضافة محلول.
+                </p>
+            </div>
+
+            <!-- حاوية المسطرة التفاعلية -->
+            <div class="overflow-x-auto bg-gray-50 border-4 border-gray-300 rounded-2xl p-6 mb-12 shadow-inner">
+                <div class="ltr-scale relative w-[1800px] h-[350px] mx-auto cursor-pointer" id="interactive-scale" onclick="handleScaleClick(event)">
+                    
+                    <!-- خط الأساس للمسطرة -->
+                    <div class="absolute top-1/2 left-0 w-full h-4 -mt-2 bg-gray-400 rounded-full shadow"></div>
+
+                    <!-- التدرجات (سيتم رسمها عبر جافاسكربت) -->
+                    <svg class="absolute top-0 left-0 w-full h-full pointer-events-none" id="scale-svg"></svg>
+
+                    <!-- حاوية النقاط/التسميات المضافة -->
+                    <div id="markers-container" class="absolute top-0 left-0 w-full h-full pointer-events-none"></div>
+                </div>
+            </div>
+
+            <div class="text-center mb-8">
+                <button onclick="clearExperiment()" class="bg-red-600 hover:bg-red-700 text-white font-bold text-3xl py-4 px-12 rounded-xl shadow-lg border-4 border-red-800">
+                    مسح جميع النتائج والبدء من جديد
+                </button>
+            </div>
+
+            <div class="bg-blue-50 p-8 rounded-2xl border-4 border-blue-300 shadow-lg">
+                <h3 class="text-4xl font-black text-blue-800 mb-8 text-center border-b-4 border-blue-200 pb-4">نتائج التحليل والمقارنة</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-3xl font-bold text-gray-700">
+                    <div class="bg-white p-6 rounded-xl shadow border-2 border-gray-200 flex justify-between items-center">
+                        <span>المحلول المتعادل (إن وجد):</span>
+                        <span id="res-neutral" class="text-4xl text-green-600 font-black">-</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow border-2 border-gray-200 flex justify-between items-center">
+                        <span>أكبر حموضية (الأقوى):</span>
+                        <span id="res-strong-acid" class="text-4xl text-red-600 font-black">-</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow border-2 border-gray-200 flex justify-between items-center">
+                        <span>أكبر قاعدية (الأقوى):</span>
+                        <span id="res-strong-base" class="text-4xl text-purple-600 font-black">-</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow border-2 border-gray-200 flex justify-between items-center">
+                        <span>أقل حموضية (الأضعف):</span>
+                        <span id="res-weak-acid" class="text-4xl text-orange-500 font-black">-</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow border-2 border-gray-200 flex justify-between items-center">
+                        <span>أقل قاعدية (الأضعف):</span>
+                        <span id="res-weak-base" class="text-4xl text-blue-400 font-black">-</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // --- إدارة التبويبات ---
+        function switchTab(tabId) {
+            const introTab = document.getElementById('tab-intro');
+            const expTab = document.getElementById('tab-experiment');
+            const introSec = document.getElementById('section-intro');
+            const expSec = document.getElementById('section-experiment');
+
+            if (tabId === 'intro') {
+                introTab.className = 'tab-active text-3xl font-bold py-4 px-10 rounded-2xl border-4 shadow-lg transition-transform hover:scale-105';
+                expTab.className = 'tab-inactive text-3xl font-bold py-4 px-10 rounded-2xl border-4 shadow-lg transition-transform hover:scale-105';
+                introSec.classList.remove('hide');
+                expSec.classList.add('hide');
+            } else {
+                expTab.className = 'tab-active text-3xl font-bold py-4 px-10 rounded-2xl border-4 shadow-lg transition-transform hover:scale-105';
+                introTab.className = 'tab-inactive text-3xl font-bold py-4 px-10 rounded-2xl border-4 shadow-lg transition-transform hover:scale-105';
+                expSec.classList.remove('hide');
+                introSec.classList.add('hide');
+                drawScaleTicks(); // التأكد من رسم التدريج عند فتح التبويب
+            }
+        }
+
+        // --- التمهيد: التكبير والتصغير ---
+        let currentZoom = 1;
+        function zoomIntro(level) {
+            const container = document.getElementById('intro-scale-container');
+            if (level === 1) {
+                currentZoom = 1;
+            } else {
+                currentZoom *= level;
+                // تحديد حدود للتكبير
+                if(currentZoom > 2.5) currentZoom = 2.5;
+                if(currentZoom < 0.5) currentZoom = 0.5;
+            }
+            container.style.transform = `scale(${currentZoom})`;
+        }
+
+        // --- التجربة العملية: رسم المسطرة التفاعلية ---
+        let solutions = []; // مصفوفة لتخزين المحاليل {name: "A", ph: 4.3}
+
+        function drawScaleTicks() {
+            const svg = document.getElementById('scale-svg');
+            const width = 1800;
+            const height = 350;
+            const yCenter = height / 2;
+            
+            // تنظيف SVG
+            svg.innerHTML = '';
+            
+            let svgContent = '';
+            
+            // رسم 140 شرطة (كل 0.1)
+            for (let i = 0; i <= 140; i++) {
+                const x = (i / 140) * width;
+                const isMajor = i % 10 === 0;
+                const phValue = i / 10;
+                
+                let tickHeight = isMajor ? 40 : 15;
+                let strokeWidth = isMajor ? 4 : 2;
+                let strokeColor = isMajor ? '#1f2937' : '#6b7280';
+                
+                // رسم الشرطة
+                svgContent += `<line x1="${x}" y1="${yCenter - tickHeight}" x2="${x}" y2="${yCenter + tickHeight}" stroke="${strokeColor}" stroke-width="${strokeWidth}" />`;
+                
+                // رسم الأرقام للشرطات الرئيسية
+                if (isMajor) {
+                    svgContent += `<text x="${x}" y="${yCenter + 70}" text-anchor="middle" font-size="32" font-weight="900" fill="#111827">${phValue}</text>`;
+                }
+            }
+            
+            svg.innerHTML = svgContent;
+        }
+
+        function handleScaleClick(event) {
+            const scaleDiv = document.getElementById('interactive-scale');
+            const rect = scaleDiv.getBoundingClientRect();
+            
+            // حساب الإحداثي X بالنسبة للمسطرة
+            const x = event.clientX - rect.left;
+            
+            // حساب قيمة pH (عرض المسطرة يمثل 14 وحدة)
+            let phRaw = (x / rect.width) * 14;
+            
+            // تقريب القيمة لأقرب عُشر (0.1)
+            let phRounded = Math.round(phRaw * 10) / 10;
+            
+            // التأكد من الحدود
+            if (phRounded < 0) phRounded = 0;
+            if (phRounded > 14) phRounded = 14;
+
+            // استخدام موجه (Prompt) لإدخال الاسم
+            const name = prompt(`لقد اخترت النقطة ( ${phRounded} ).\nالرجاء إدخال اسم المحلول (مثال: A, B, المحلول الأول):`);
+            
+            if (name && name.trim() !== '') {
+                solutions.push({
+                    name: name.trim(),
+                    ph: phRounded
+                });
+                renderMarkers();
+                updateResults();
+            }
+        }
+
+        function renderMarkers() {
+            const container = document.getElementById('markers-container');
+            container.innerHTML = ''; // مسح العلامات السابقة
+            
+            // ترتيب المحاليل حسب قيمة pH لمعالجة التداخل بطريقة منطقية
+            let sortedSolutions = [...solutions].sort((a, b) => a.ph - b.ph);
+            
+            const width = 1800;
+            const height = 350;
+            const yCenter = height / 2;
+            
+            // مصفوفة لتتبع الارتفاعات (لتجنب التداخل)
+            // سنوزع التسميات على مستويات عمودية مختلفة
+            let levels = [-160, -110, -60, 90, 140]; // Y offsets من المركز
+            let lastUsedLevelIndex = -1;
+
+            sortedSolutions.forEach((sol, index) => {
+                const x = (sol.ph / 14) * width;
+                
+                // تحديد المستوى العمودي بشكل متبادل (تكتيك منع التداخل)
+                // إذا كانت المسافة بين هذا المحلول والسابق قريبة جدا، غير المستوى
+                let levelIndex;
+                if (index > 0 && (sol.ph - sortedSolutions[index-1].ph) < 0.6) {
+                    lastUsedLevelIndex = (lastUsedLevelIndex + 1) % levels.length;
+                    levelIndex = lastUsedLevelIndex;
+                } else {
+                    levelIndex = 0; // العودة للمستوى الافتراضي (الأعلى)
+                    lastUsedLevelIndex = 0;
+                }
+                
+                const yOffset = levels[levelIndex];
+                
+                // إنشاء خط يربط التسمية بالمحور
+                const line = document.createElement('div');
+                line.style.position = 'absolute';
+                line.style.left = `${x}px`;
+                line.style.width = '4px';
+                line.style.backgroundColor = '#ef4444';
+                line.style.zIndex = '10';
+                
+                if(yOffset < 0) { // التسمية بالأعلى
+                    line.style.top = `calc(50% ${yOffset}px + 30px)`;
+                    line.style.height = `${Math.abs(yOffset) - 30}px`;
+                } else { // التسمية بالأسفل
+                    line.style.top = '50%';
+                    line.style.height = `${yOffset - 30}px`;
+                }
+                container.appendChild(line);
+
+                // إنشاء مربع التسمية
+                const label = document.createElement('div');
+                label.className = 'absolute bg-red-600 text-white font-black rounded-lg shadow-xl flex items-center justify-center border-4 border-white z-20';
+                label.style.left = `${x}px`;
+                label.style.top = `calc(50% + ${yOffset}px)`;
+                label.style.transform = 'translate(-50%, -50%)'; // تمركز حول النقطة x
+                label.style.padding = '8px 16px';
+                label.style.fontSize = '24px';
+                label.style.minWidth = '60px';
+                label.style.textAlign = 'center';
+                
+                label.innerHTML = `<span class="block text-sm font-bold text-red-200 mb-1">pH ${sol.ph}</span>${sol.name}`;
+                
+                // نقطة مركزية على المحور
+                const dot = document.createElement('div');
+                dot.className = 'absolute bg-red-700 rounded-full border-4 border-white z-30 shadow-md';
+                dot.style.left = `${x}px`;
+                dot.style.top = '50%';
+                dot.style.width = '24px';
+                dot.style.height = '24px';
+                dot.style.transform = 'translate(-50%, -50%)';
+                
+                container.appendChild(label);
+                container.appendChild(dot);
+            });
+        }
+
+        function updateResults() {
+            if (solutions.length === 0) {
+                clearResultsUI();
+                return;
+            }
+
+            const neutrals = solutions.filter(s => s.ph === 7);
+            const acids = solutions.filter(s => s.ph < 7);
+            const bases = solutions.filter(s => s.ph > 7);
+
+            // المتعادل
+            document.getElementById('res-neutral').innerText = neutrals.length > 0 
+                ? neutrals.map(s => `${s.name} (7)`).join(' و ') 
+                : 'لا يوجد';
+
+            // أكبر حموضية (أقل رقم تحت 7)
+            if (acids.length > 0) {
+                const strongestAcid = acids.reduce((prev, curr) => prev.ph < curr.ph ? prev : curr);
+                document.getElementById('res-strong-acid').innerText = `${strongestAcid.name} (${strongestAcid.ph})`;
+            } else {
+                document.getElementById('res-strong-acid').innerText = 'لا يوجد أحماض';
+            }
+
+            // أقل حموضية (أكبر رقم تحت 7)
+            if (acids.length > 0) {
+                const weakestAcid = acids.reduce((prev, curr) => prev.ph > curr.ph ? prev : curr);
+                document.getElementById('res-weak-acid').innerText = `${weakestAcid.name} (${weakestAcid.ph})`;
+            } else {
+                document.getElementById('res-weak-acid').innerText = 'لا يوجد أحماض';
+            }
+
+            // أكبر قاعدية (أكبر رقم فوق 7)
+            if (bases.length > 0) {
+                const strongestBase = bases.reduce((prev, curr) => prev.ph > curr.ph ? prev : curr);
+                document.getElementById('res-strong-base').innerText = `${strongestBase.name} (${strongestBase.ph})`;
+            } else {
+                document.getElementById('res-strong-base').innerText = 'لا توجد قواعد';
+            }
+
+            // أقل قاعدية (أقل رقم فوق 7)
+            if (bases.length > 0) {
+                const weakestBase = bases.reduce((prev, curr) => prev.ph < curr.ph ? prev : curr);
+                document.getElementById('res-weak-base').innerText = `${weakestBase.name} (${weakestBase.ph})`;
+            } else {
+                document.getElementById('res-weak-base').innerText = 'لا توجد قواعد';
+            }
+        }
+
+        function clearResultsUI() {
+            const dashes = '-';
+            document.getElementById('res-neutral').innerText = dashes;
+            document.getElementById('res-strong-acid').innerText = dashes;
+            document.getElementById('res-strong-base').innerText = dashes;
+            document.getElementById('res-weak-acid').innerText = dashes;
+            document.getElementById('res-weak-base').innerText = dashes;
+        }
+
+        function clearExperiment() {
+            if(confirm('هل أنت متأكد من مسح جميع النتائج؟')) {
+                solutions = [];
+                renderMarkers();
+                updateResults();
+            }
+        }
+
+        // تهيئة أولية
+        window.onload = () => {
+            drawScaleTicks();
+            // إصلاح حجم SVG عند تغيير حجم النافذة
+            window.addEventListener('resize', drawScaleTicks);
+        };
+    </script>
+</body>
+</html>
